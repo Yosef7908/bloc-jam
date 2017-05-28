@@ -114,6 +114,8 @@
              var currentParent = element.parentElement;
              while (currentParent.className !== targetClass && currentParent.className !== null) {
                  currentParent = currentParent.parentElement;
+                 console.log("No Parent found");
+                 console.log("No Parent found with that " + currentParent.className + " ! ");
              }
              return currentParent;
          }
