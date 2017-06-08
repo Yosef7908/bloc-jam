@@ -31,24 +31,26 @@ var createSongRow = function(songNumber, songName, songLength) {
       + '  <td class="song-item-duration">' + songLength + '</td>'
       + '</tr>'
       ;
- 
+
      var $row = $(template);
 
      var clickHandler = function () {
 
          var songNumber = parseInt($(this).attr('data-song-number'));
 
-         if (setSong !== null) {
-             var currentlyPlayingCell = getSongNumberCell(setSong);
-             currentlyPlayingCell.html(setSong);
+         // songNumber
+         if (setSong(songNumber) !== null) {
+           console.log("Ok");
+             var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
+             currentlyPlayingCell.html(currentlyPlayingSongNumber);
          }
-         if (setSong !== songNumber) {
-             setSong = songNumber;
+         if (currentlyPlayingSongNumber !== songNumber) {
+             currentlyPlayingSongNumber = songNumber;
              currentSoundFile.play();
              $(this).html(pauseButtonTemplate);
              currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
              updatePlayerBarSong();
-         } else if (setSong === songNumber) {
+         } else {
              if (currentSoundFile.isPaused()) {
                     $(this).html(pauseButtonTemplate);
                     $('.main-controls .play-pause').html(playerBarPauseButton);
@@ -79,7 +81,7 @@ var createSongRow = function(songNumber, songName, songLength) {
        }
      };
 
-     
+
      $row.find('.song-item-number').click(clickHandler);
      $row.hover(onHover, offHover);
      return $row;
@@ -127,7 +129,8 @@ var $albumSongList = $('.album-view-song-list');
 
   // store the current playing song
  var currentAlbum = null;
- var setSong = null;
+ // var setSong = null;
+ var currentlyPlayingSongNumber = null;
  var currentSongFromAlbum = null;
  var currentSoundFile = null;
  var currentVolume = 80;
@@ -166,6 +169,7 @@ var $albumSongList = $('.album-view-song-list');
 
  var nextSong = function () {
    var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
+   console.log("currentSongIndex=",currentSongIndex);
    // increment the song number
      currentSongIndex++;
 
@@ -174,10 +178,10 @@ var $albumSongList = $('.album-view-song-list');
      }
 
      // save the last song number before changing it
-     var lastSongNumber = setSong;
+     var lastSongNumber = currentSongIndex - 1;
 
      // set a new current song
-     setSong = currentSongIndex + 1;
+     setSong(currentSongIndex);
      currentSoundFile.play();
      currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
 
@@ -209,4 +213,3 @@ var $albumSongList = $('.album-view-song-list');
             index = 0;
         }
      });
-
